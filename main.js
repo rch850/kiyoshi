@@ -54,6 +54,15 @@ var Niku = enchant.Class.create(enchant.Sprite, {
   }
 });
 
+var NikuOrder = Class.create(Label, {
+  initialize: function() {
+    Label.call(this);
+    this.type = Math.floor(Math.random() * 6);
+    this.text = NIKU_NAMES[this.type];
+    game.rootScene.addChild(this);
+  }
+});
+
 window.onload = function() {
     game = new Game(320, 400);
     game.preload("niku.png");
@@ -70,11 +79,8 @@ window.onload = function() {
         }
       }
 
-      // 注文が入る
-      var label = new Label();
-      label.nikuOrder = Math.floor(Math.random() * 6);
-      label.text = NIKU_NAMES[label.nikuOrder];
-      game.rootScene.addChild(label);
+      // 注文を入れる
+      nikuOrder = new NikuOrder();
     }
     game.start();
 }
