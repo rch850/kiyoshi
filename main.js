@@ -9,14 +9,17 @@ var ORDER_TIMER = 30 * 10;
 // フォント
 var DEFAULT_FONT = "20pt Serif";
 
-function removeAllNiku(callback) {
-  var x, y;
+function removeAllNiku(callback, isOk) {
+  var x, y, o;
   for (y = 0; y < 6; y++) {
     for (x = 0; x < 6; x++) {
-      if (x !== 0 || y !== 0) {
-        nikuTable[y][x].tl.fadeOut(10);
+      if (isOk) {
+        o = nikuTable[y][x].tl.fadeOut(10);
       } else {
-        nikuTable[y][x].tl.fadeOut(10).then(function() {
+        o = nikuTable[y][x].tl.moveBy(Math.random() * 1000 - 500, Math.random() * 1000 - 500, 10);
+      }
+      if (x === 0 && y === 0) {
+        o.then(function() {
           var x, y;
           for (y = 0; y < 6; y++) {
             for (x = 0; x < 6; x++) {
@@ -96,7 +99,7 @@ var Niku = enchant.Class.create(enchant.Sprite, {
                   setNiku();
                   tappedNiku = [];
                   nikuOrder.newOrder();
-                });
+                }, true);
               });
             });
           }
@@ -114,7 +117,7 @@ var Niku = enchant.Class.create(enchant.Sprite, {
             setNiku();
             tappedNiku = [];
             nikuOrder.newOrder();
-          });
+          }, false);
         });
       }
     });
