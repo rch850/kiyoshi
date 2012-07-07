@@ -75,11 +75,23 @@ var Niku = enchant.Class.create(enchant.Sprite, {
             tappedNiku[i].tl.fadeOut(10).and().rotateBy(360, 10);
           } else {
             tappedNiku[i].tl.fadeOut(10).and().rotateBy(360, 10).then(function() {
-              removeAllNiku(function() {
-                setNiku();
-                tappedNiku = [];
-                nikuOrder.newOrder();
+              var okimg = new Sprite(320, 250);
+              okimg.image = game.assets["okng.png"];
+              okimg.x = 0;
+              okimg.y = 40;
+              okimg.frame = 0;
+              okimg.addEventListener("enterframe", function() {
+                if (this.age < 30) {
+                  return;
+                }
+                game.rootScene.removeChild(this);
+                removeAllNiku(function() {
+                  setNiku();
+                  tappedNiku = [];
+                  nikuOrder.newOrder();
+                });
               });
+              game.rootScene.addChild(okimg);
             });
           }
         }
@@ -91,11 +103,23 @@ var Niku = enchant.Class.create(enchant.Sprite, {
             score += Math.floor(nikuOrder.timelimit / 3 / 5 * 10);
           }
         }
-        removeAllNiku(function() {
-          setNiku();
-          tappedNiku = [];
-          nikuOrder.newOrder();
+        var okimg = new Sprite(320, 250);
+        okimg.image = game.assets["okng.png"];
+        okimg.x = 0;
+        okimg.y = 40;
+        okimg.frame = 1;
+        okimg.addEventListener("enterframe", function() {
+          if (this.age < 30) {
+            return;
+          }
+          game.rootScene.removeChild(this);
+          removeAllNiku(function() {
+            setNiku();
+            tappedNiku = [];
+            nikuOrder.newOrder();
+          });
         });
+        game.rootScene.addChild(okimg);
       }
     });
 
@@ -167,7 +191,7 @@ function setNiku() {
 window.onload = function() {
     game = new Game(320, 356);
     game.rootScene.backgroundColor = "#200";
-    game.preload("niku.png", "menu.png");
+    game.preload("niku.png", "menu.png", "okng.png");
     game.onload = function() {
       score = 0;
 
@@ -186,6 +210,7 @@ window.onload = function() {
         this.text = "AKY " + score;
       });
       game.rootScene.addChild(scoreLabel);
+
     }
     game.start();
 }
