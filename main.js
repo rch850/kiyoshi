@@ -30,6 +30,22 @@ function removeAllNiku(callback) {
   }
 }
 
+function showJudgeImage(isOk, callback) {
+  var sprite = new Sprite(320, 250);
+  sprite.image = game.assets["okng.png"];
+  sprite.x = 0;
+  sprite.y = 40;
+  sprite.frame = isOk ? 0 : 1;
+  sprite.addEventListener("enterframe", function() {
+    if (this.age < 30) {
+      return;
+    }
+    game.rootScene.removeChild(this);
+    callback();
+  });
+  game.rootScene.addChild(sprite);
+}
+
 var Niku = enchant.Class.create(enchant.Sprite, {
 
   initialize: function(x, y, type) {
@@ -75,23 +91,13 @@ var Niku = enchant.Class.create(enchant.Sprite, {
             tappedNiku[i].tl.fadeOut(10).and().rotateBy(360, 10);
           } else {
             tappedNiku[i].tl.fadeOut(10).and().rotateBy(360, 10).then(function() {
-              var okimg = new Sprite(320, 250);
-              okimg.image = game.assets["okng.png"];
-              okimg.x = 0;
-              okimg.y = 40;
-              okimg.frame = 0;
-              okimg.addEventListener("enterframe", function() {
-                if (this.age < 30) {
-                  return;
-                }
-                game.rootScene.removeChild(this);
+              showJudgeImage(true, function() {
                 removeAllNiku(function() {
                   setNiku();
                   tappedNiku = [];
                   nikuOrder.newOrder();
                 });
               });
-              game.rootScene.addChild(okimg);
             });
           }
         }
@@ -103,23 +109,13 @@ var Niku = enchant.Class.create(enchant.Sprite, {
             score += Math.floor(nikuOrder.timelimit / 3 / 5 * 10);
           }
         }
-        var okimg = new Sprite(320, 250);
-        okimg.image = game.assets["okng.png"];
-        okimg.x = 0;
-        okimg.y = 40;
-        okimg.frame = 1;
-        okimg.addEventListener("enterframe", function() {
-          if (this.age < 30) {
-            return;
-          }
-          game.rootScene.removeChild(this);
+        showJudgeImage(false, function() {
           removeAllNiku(function() {
             setNiku();
             tappedNiku = [];
             nikuOrder.newOrder();
           });
         });
-        game.rootScene.addChild(okimg);
       }
     });
 
