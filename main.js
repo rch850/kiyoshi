@@ -1,8 +1,9 @@
 enchant();
 
+var IMAGE_SIZE = 32;
+
 var Niku = enchant.Class.create(enchant.Sprite, {
   // ひとつの肉の画像サイズ（縦横いっしょ）
-  IMAGE_SIZE = 32;
 
   initialize: function(x, y) {
     enchant.Sprite.call(this, IMAGE_SIZE, IMAGE_SIZE);
@@ -29,7 +30,9 @@ var Niku = enchant.Class.create(enchant.Sprite, {
       // 同じ肉が5回連続でタップされたら消す
       if (tappedNiku.length === 5) {
         for (i = 0; i < tappedNiku.length; i++) {
-          game.rootScene.removeChild(tappedNiku[i]);
+          tappedNiku[i].tl.fadeOut(10).and().rotateBy(360, 10).then(function() {
+            game.rootScene.removeChild(tappedNiku[i]);
+          });
         }
         tappedNiku = [];
         return;
