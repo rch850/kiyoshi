@@ -42,6 +42,7 @@ var Niku = enchant.Class.create(enchant.Sprite, {
             game.rootScene.removeChild(tappedNiku[i]);
           });
         }
+        score += 10;
       } else {
         // 失敗！
         for (i = 0; i < tappedNiku.length; i++) {
@@ -60,8 +61,8 @@ var Niku = enchant.Class.create(enchant.Sprite, {
 
 var NikuOrder = Class.create(Label, {
   initialize: function() {
-    Label.call(this);
-    this.font = "20px Impact";
+    Label.call(this, "Hey, Kiyoshi!!");
+    this.font = "20pt Impact";
     this.newOrder();
     this.addEventListener("enterframe", function() {
       this.text = NIKU_NAMES[this.type] + "  " + this.timelimit;
@@ -84,6 +85,7 @@ window.onload = function() {
     game = new Game(320, 400);
     game.preload("niku.png");
     game.onload = function() {
+      score = 0;
       var x, y;
 
       // 肉を並べる
@@ -98,6 +100,15 @@ window.onload = function() {
 
       // 注文を入れる
       nikuOrder = new NikuOrder();
+
+      // スコア表示
+      var scoreLabel = new Label("0 aki");
+      scoreLabel.font = "20pt Impact";
+      scoreLabel.x = 200;
+      scoreLabel.addEventListener("enterframe", function() {
+        this.text = score + " aki";
+      });
+      game.rootScene.addChild(scoreLabel);
     }
     game.start();
 }
