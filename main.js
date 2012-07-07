@@ -21,6 +21,13 @@ var Niku = enchant.Class.create(enchant.Sprite, {
     this.addEventListener("touchend", function() {
       var i, j, nikumatch = true;
 
+      // 一度押した肉は反応しない
+      for (i = 0; i < tappedNiku.length; i++) {
+        if (tappedNiku[i] === this) {
+          return;
+        }
+      }
+
       tappedNiku[tappedNiku.length] = this;
       // タップされたことが分かるような見た目にする
       this.rotation = 90;
@@ -58,12 +65,12 @@ var Niku = enchant.Class.create(enchant.Sprite, {
             });
           }
         }
-        score += nikuOrder.timelimit;
+        score += Math.floor(nikuOrder.timelimit / 3 * 10);
       } else {
         // 失敗！
         for (i = 0; i < tappedNiku.length; i++) {
           if (nikuOrder.type === tappedNiku[i].type) {
-            score += Math.floor(nikuOrder.timelimit / 5);
+            score += Math.floor(nikuOrder.timelimit / 3 / 5 * 10);
           }
         }
         for (j = 0; j < 6 * 6; j++) {
