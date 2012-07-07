@@ -76,7 +76,6 @@ var NikuOrder = Class.create(Label, {
 
   newOrder: function() {
     this.type = Math.floor(Math.random() * 6);
-    this.type = 0; // デバッグ用に常にジュンケイオーダーにする
     this.timelimit = 600;
   }
 });
@@ -100,7 +99,7 @@ function shuffledNumberArray() {
 }
 
 window.onload = function() {
-    game = new Game(320, 400);
+    game = new Game(320, 356);
     game.preload("niku.png");
     game.onload = function() {
       score = 0;
