@@ -3,7 +3,7 @@ enchant();
 // ひとつの肉の画像サイズ（縦横いっしょ）
 var IMAGE_SIZE = 48;
 // 肉の名前（日本語だと文字化けする……）
-var NIKU_NAMES = [ "Junkei", "Shirot", "Negima", "Tan", "Kyuuri", "Wakadori" ];
+var NIKU_NAMES = [ "Junkei", "Shiro", "Negima", "Tan", "Kyuuri", "Wakadori" ];
 // タイマー（フレーム単位）
 var ORDER_TIMER = 30 * 10;
 
@@ -62,9 +62,16 @@ var Niku = enchant.Class.create(enchant.Sprite, {
       } else {
         // 失敗！
         for (i = 0; i < tappedNiku.length; i++) {
-          tappedNiku[i].rotation = 0;
+          if (nikuOrder.type === tappedNiku[i].type) {
+            score += Math.floor(nikuOrder.timelimit / 5);
+          }
         }
-        game.end("なにもってきとんじゃ！");
+        for (j = 0; j < 6 * 6; j++) {
+          game.rootScene.removeChild(nikuTable[Math.floor(j / 6)][Math.floor(j % 6)]);
+        }
+        setNiku();
+        tappedNiku = [];
+        nikuOrder.newOrder();
       }
     });
 
