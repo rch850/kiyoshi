@@ -53,7 +53,7 @@ var Niku = enchant.Class.create(enchant.Sprite, {
 
       tappedNiku[tappedNiku.length] = this;
       // タップされたことが分かるような見た目にする
-      this.rotation = 90;
+      this.tl.rotateBy(90, 3);
       if (tappedNiku.length < 5) {
         return;
       }
@@ -114,7 +114,7 @@ var NikuOrder = Class.create(Sprite, {
       this.timelimit--;
       this.timelimitLabel.text = Math.floor(nikuOrder.timelimit / 3 * 10);
       if (this.timelimit < 0) {
-        game.end("おそいわ！");
+        game.end(score, score + " AKY");
       }
     });
 
