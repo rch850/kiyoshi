@@ -6,6 +6,8 @@ var IMAGE_SIZE = 48;
 var NIKU_NAMES = [ "Junkei", "Shiro", "Negima", "Tan", "Kyuuri", "Wakadori" ];
 // タイマー（フレーム単位）
 var ORDER_TIMER = 30 * 10;
+// フォント
+var DEFAULT_FONT = "20pt Serif";
 
 var Niku = enchant.Class.create(enchant.Sprite, {
 
@@ -89,7 +91,8 @@ var Niku = enchant.Class.create(enchant.Sprite, {
 var NikuOrder = Class.create(Label, {
   initialize: function() {
     Label.call(this, "Hey, Kiyoshi!!");
-    this.font = "20pt Impact";
+    this.font = DEFAULT_FONT;
+    this.color = "#FF0";
     this.newOrder();
     this.addEventListener("enterframe", function() {
       this.text = NIKU_NAMES[this.type] + "  " + (this.timelimit / 3 * 10).toFixed(0);
@@ -141,6 +144,7 @@ function setNiku() {
 
 window.onload = function() {
     game = new Game(320, 356);
+    game.rootScene.backgroundColor = "#200";
     game.preload("niku.png");
     game.onload = function() {
       score = 0;
@@ -153,7 +157,8 @@ window.onload = function() {
 
       // スコア表示
       var scoreLabel = new Label("AKY 0");
-      scoreLabel.font = "20pt Impact";
+      scoreLabel.font = DEFAULT_FONT;
+      scoreLabel.color = "#FF0";
       scoreLabel.x = 200;
       scoreLabel.addEventListener("enterframe", function() {
         this.text = "AKY " + score;
