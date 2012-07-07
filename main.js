@@ -1,7 +1,7 @@
 enchant();
 
 // ひとつの肉の画像サイズ（縦横いっしょ）
-var IMAGE_SIZE = 32;
+var IMAGE_SIZE = 48;
 var NIKU_NAMES = [ "Junkei", "Shirot", "Negima", "Tan", "Kyuuri", "Wakadori" ];
 
 var Niku = enchant.Class.create(enchant.Sprite, {
