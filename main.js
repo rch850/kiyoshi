@@ -47,6 +47,7 @@ var Niku = enchant.Class.create(enchant.Sprite, {
         for (i = 0; i < tappedNiku.length; i++) {
           tappedNiku[i].rotation = 0;
         }
+        game.end("なにもってきとんじゃ！");
       }
 
       tappedNiku = [];
@@ -66,7 +67,7 @@ var NikuOrder = Class.create(Label, {
       this.text = NIKU_NAMES[this.type] + "  " + this.timelimit;
       this.timelimit--;
       if (this.timelimit < 0) {
-        game.stop();
+        game.end("おそいわ！");
       }
     });
     game.rootScene.addChild(this);
