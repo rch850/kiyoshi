@@ -12,6 +12,7 @@ var Niku = enchant.Class.create(enchant.Sprite, {
     this.addEventListener("touchend", function() {
       var i;
       tappedNiku[tappedNiku.length] = this;
+
       // 前回と違う肉がタップされたらもとに戻す
       if (tappedNiku.length >= 2 && tappedNiku[tappedNiku.length - 1].type !== tappedNiku[tappedNiku.length - 2].type) {
         for (i = 0; i < tappedNiku.length; i++) {
@@ -20,6 +21,17 @@ var Niku = enchant.Class.create(enchant.Sprite, {
         tappedNiku = [];
         return;
       }
+
+      // 同じ肉が5回連続でタップされたら消す
+      if (tappedNiku.length === 5) {
+        for (i = 0; i < tappedNiku.length; i++) {
+          game.rootScene.removeChild(tappedNiku[i]);
+        }
+        tappedNiku = [];
+        return;
+      }
+
+      // とりあえず肉が消えたかのような画像にしておく
       this.frame = 8;
     });
 
