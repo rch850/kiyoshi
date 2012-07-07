@@ -152,11 +152,11 @@ window.onload = function() {
       nikuOrder = new NikuOrder();
 
       // スコア表示
-      var scoreLabel = new Label("0 aki");
+      var scoreLabel = new Label("AKY 0");
       scoreLabel.font = "20pt Impact";
       scoreLabel.x = 200;
       scoreLabel.addEventListener("enterframe", function() {
-        this.text = score + " aki";
+        this.text = "AKY " + score;
       });
       game.rootScene.addChild(scoreLabel);
     }
