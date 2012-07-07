@@ -16,7 +16,7 @@ var Niku = enchant.Class.create(enchant.Sprite, {
     this.frame = this.type;
 
     this.addEventListener("touchend", function() {
-      var i, nikumatch = false;
+      var i, nikumatch = true;
 
       tappedNiku[tappedNiku.length] = this;
       // タップされたことが分かるような見た目にする
@@ -25,29 +25,32 @@ var Niku = enchant.Class.create(enchant.Sprite, {
         return;
       }
 
-      // 肉が5つ選択されたら……
-      for (i = 1; i < tappedNiku.length; i++) {
-        if (tappedNiku[0].type !== tappedNiku[i].type) {
-          nikumatch = true;
+      // 肉が5つ選択された
+
+      // 注文通りか判定する
+      for (i = 0; i < tappedNiku.length; i++) {
+        if (nikuOrder.type !== tappedNiku[i].type) {
+          nikumatch = false;
           break;
         }
       }
 
       if (nikumatch) {
-        // 失敗！
-        for (i = 0; i < tappedNiku.length; i++) {
-          tappedNiku[i].rotation = 0;
-        }
-      } else {
         // 成功！
         for (i = 0; i < tappedNiku.length; i++) {
           tappedNiku[i].tl.fadeOut(10).and().rotateBy(360, 10).then(function() {
             game.rootScene.removeChild(tappedNiku[i]);
           });
         }
+      } else {
+        // 失敗！
+        for (i = 0; i < tappedNiku.length; i++) {
+          tappedNiku[i].rotation = 0;
+        }
       }
 
       tappedNiku = [];
+      nikuOrder.newOrder();
     });
 
     game.rootScene.addChild(this);
@@ -57,9 +60,22 @@ var Niku = enchant.Class.create(enchant.Sprite, {
 var NikuOrder = Class.create(Label, {
   initialize: function() {
     Label.call(this);
-    this.type = Math.floor(Math.random() * 6);
-    this.text = NIKU_NAMES[this.type];
+    this.font = "20px Impact";
+    this.newOrder();
+    this.addEventListener("enterframe", function() {
+      this.text = NIKU_NAMES[this.type] + "  " + this.timelimit;
+      this.timelimit--;
+      if (this.timelimit < 0) {
+        game.stop();
+      }
+    });
     game.rootScene.addChild(this);
+  },
+
+  newOrder: function() {
+    this.type = Math.floor(Math.random() * 6);
+    this.type = 0; // デバッグ用に常にジュンケイオーダーにする
+    this.timelimit = 600;
   }
 });
 
