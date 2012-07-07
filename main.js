@@ -9,14 +9,22 @@ var ORDER_TIMER = 30 * 10;
 // フォント
 var DEFAULT_FONT = "20pt Serif";
 
-function fadeOutAllNiku(callback) {
+function removeAllNiku(callback) {
   var x, y;
   for (y = 0; y < 6; y++) {
     for (x = 0; x < 6; x++) {
       if (x !== 0 || y !== 0) {
         nikuTable[y][x].tl.fadeOut(10);
       } else {
-        nikuTable[y][x].tl.fadeOut(10).then(callback);
+        nikuTable[y][x].tl.fadeOut(10).then(function() {
+          var x, y;
+          for (y = 0; y < 6; y++) {
+            for (x = 0; x < 6; x++) {
+              game.rootScene.removeChild(nikuTable[y][x]);
+            }
+          }
+          callback();
+        });
       }
     }
   }
@@ -67,19 +75,11 @@ var Niku = enchant.Class.create(enchant.Sprite, {
             tappedNiku[i].tl.fadeOut(10).and().rotateBy(360, 10);
           } else {
             tappedNiku[i].tl.fadeOut(10).and().rotateBy(360, 10).then(function() {
-              fadeOutAllNiku(function() {
-                var x, y;
-                for (y = 0; y < 6; y++) {
-                  for (x = 0; x < 6; x++) {
-                    game.rootScene.removeChild(nikuTable[y][x]);
-                  }
-                }
-              });
-              setTimeout(function() {
+              removeAllNiku(function() {
                 setNiku();
                 tappedNiku = [];
                 nikuOrder.newOrder();
-              }, 500);
+              });
             });
           }
         }
@@ -91,18 +91,10 @@ var Niku = enchant.Class.create(enchant.Sprite, {
             score += Math.floor(nikuOrder.timelimit / 3 / 5 * 10);
           }
         }
-        fadeOutAllNiku(function() {
-          var x, y;
-          for (y = 0; y < 6; y++) {
-            for (x = 0; x < 6; x++) {
-              game.rootScene.removeChild(nikuTable[y][x]);
-            }
-          }
-          setTimeout(function() {
-            setNiku();
-            tappedNiku = [];
-            nikuOrder.newOrder();
-          }, 500);
+        removeAllNiku(function() {
+          setNiku();
+          tappedNiku = [];
+          nikuOrder.newOrder();
         });
       }
     });
