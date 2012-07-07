@@ -6,13 +6,13 @@ var NIKU_NAMES = [ "Junkei", "Shirot", "Negima", "Tan", "Kyuuri", "Wakadori" ];
 
 var Niku = enchant.Class.create(enchant.Sprite, {
 
-  initialize: function(x, y) {
+  initialize: function(x, y, type) {
     enchant.Sprite.call(this, IMAGE_SIZE, IMAGE_SIZE);
     this.image = game.assets["niku.png"];
     this.x = 16 + x * 48;
     this.y = 56 + y * 48;
     this.scaleX = this.scaleY = 48 / IMAGE_SIZE;
-    this.type = Math.floor(Math.random() * 6);
+    this.type = type;
     this.frame = this.type;
 
     this.addEventListener("touchend", function() {
@@ -81,20 +81,40 @@ var NikuOrder = Class.create(Label, {
   }
 });
 
+// 0から5までの数が6つずつ入ったランダムな配列を返す
+function shuffledNumberArray() {
+  var ary = [], x, y;
+  for (y = 0; y < 6; y++) {
+    for (x = 0; x < 6; x++) {
+      ary[x + y * 6] = y;
+    }
+  }
+  // シャッフルシャッフル
+  for (i = 0; i < 6 * 6; i++) {
+    var r = Math.floor(Math.random() * 6 * 6);
+    var tmp = ary[i];
+    ary[i] = ary[r];
+    ary[r] = tmp;
+  }
+  return ary;
+}
+
 window.onload = function() {
     game = new Game(320, 400);
     game.preload("niku.png");
     game.onload = function() {
       score = 0;
-      var x, y;
+      var i, x, y;
 
-      // 肉を並べる
+      // 肉を並べる.
+      // 絶対に解けるようにしないと
       tappedNiku = [];
       nikuTable = [];
+      var nikuTypes = shuffledNumberArray();
       for (y = 0; y < 6; y++) {
         nikuTable[y] = [];
         for (x = 0; x < 6; x++) {
-          nikuTable[y][x] = new Niku(x, y);
+          nikuTable[y][x] = new Niku(x, y, nikuTypes[x + y * 6]);
         }
       }
 
