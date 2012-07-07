@@ -18,10 +18,22 @@ window.onload = function() {
           niku.image = game.assets["niku.png"];
           niku.x = x * 32;
           niku.y = y * 32;
-          niku.frame = Math.floor(Math.random() * 6);
+          niku.type = Math.floor(Math.random() * 6);
+          niku.frame = niku.type;
 
           niku.addEventListener("touchend", function() {
-            this.frame = 3;
+            var i;
+            tappedNiku[tappedNiku.length] = this;
+            // 前回と違う肉がタップされたらもとに戻す
+            if (tappedNiku.length >= 2 && tappedNiku[tappedNiku.length - 1].type !== tappedNiku[tappedNiku.length - 2].type) {
+              for (i = 0; i < tappedNiku.length; i++) {
+                console.log("revert niku: "+ i);
+                tappedNiku[i].frame = tappedNiku[i].type;
+              }
+              tappedNiku = [];
+              return;
+            }
+            this.frame = 8;
           });
 
           game.rootScene.addChild(niku);
