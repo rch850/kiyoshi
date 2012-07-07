@@ -2,7 +2,10 @@ enchant();
 
 // ひとつの肉の画像サイズ（縦横いっしょ）
 var IMAGE_SIZE = 48;
+// 肉の名前（日本語だと文字化けする……）
 var NIKU_NAMES = [ "Junkei", "Shirot", "Negima", "Tan", "Kyuuri", "Wakadori" ];
+// タイマー（フレーム単位）
+var ORDER_TIMER = 30 * 10;
 
 var Niku = enchant.Class.create(enchant.Sprite, {
 
@@ -16,7 +19,7 @@ var Niku = enchant.Class.create(enchant.Sprite, {
     this.frame = this.type;
 
     this.addEventListener("touchend", function() {
-      var i, nikumatch = true;
+      var i, j, nikumatch = true;
 
       tappedNiku[tappedNiku.length] = this;
       // タップされたことが分かるような見た目にする
@@ -38,11 +41,24 @@ var Niku = enchant.Class.create(enchant.Sprite, {
       if (nikumatch) {
         // 成功！
         for (i = 0; i < tappedNiku.length; i++) {
-          tappedNiku[i].tl.fadeOut(10).and().rotateBy(360, 10).then(function() {
-            game.rootScene.removeChild(tappedNiku[i]);
-          });
+          if (i === 0) {
+            tappedNiku[i].tl.fadeOut(10).and().rotateBy(360, 10).then(function() {
+              for (j = 0; j < 6 * 6; j++) {
+                game.rootScene.removeChild(nikuTable[Math.floor(j / 6)][Math.floor(j % 6)]);
+              }
+              setTimeout(function() {
+                setNiku();
+                tappedNiku = [];
+                nikuOrder.newOrder();
+              }, 500);
+            });
+          } else {
+            tappedNiku[i].tl.fadeOut(10).and().rotateBy(360, 10).then(function() {
+              game.rootScene.removeChild(tappedNiku[i]);
+            });
+          }
         }
-        score += 10;
+        score += nikuOrder.timelimit;
       } else {
         // 失敗！
         for (i = 0; i < tappedNiku.length; i++) {
@@ -50,9 +66,6 @@ var Niku = enchant.Class.create(enchant.Sprite, {
         }
         game.end("なにもってきとんじゃ！");
       }
-
-      tappedNiku = [];
-      nikuOrder.newOrder();
     });
 
     game.rootScene.addChild(this);
@@ -65,7 +78,7 @@ var NikuOrder = Class.create(Label, {
     this.font = "20pt Impact";
     this.newOrder();
     this.addEventListener("enterframe", function() {
-      this.text = NIKU_NAMES[this.type] + "  " + this.timelimit;
+      this.text = NIKU_NAMES[this.type] + "  " + (this.timelimit / 3 * 10).toFixed(0);
       this.timelimit--;
       if (this.timelimit < 0) {
         game.end("おそいわ！");
@@ -76,7 +89,7 @@ var NikuOrder = Class.create(Label, {
 
   newOrder: function() {
     this.type = Math.floor(Math.random() * 6);
-    this.timelimit = 600;
+    this.timelimit = ORDER_TIMER;
   }
 });
 
@@ -98,24 +111,28 @@ function shuffledNumberArray() {
   return ary;
 }
 
+function setNiku() {
+  // 肉を並べる.
+  // 絶対に解けるようにしないと
+  tappedNiku = [];
+  nikuTable = [];
+  var x, y, nikuTypes = shuffledNumberArray();
+  for (y = 0; y < 6; y++) {
+    nikuTable[y] = [];
+    for (x = 0; x < 6; x++) {
+      nikuTable[y][x] = new Niku(x, y, nikuTypes[x + y * 6]);
+    }
+  }
+}
+
 window.onload = function() {
     game = new Game(320, 356);
     game.preload("niku.png");
     game.onload = function() {
       score = 0;
-      var i, x, y;
 
-      // 肉を並べる.
-      // 絶対に解けるようにしないと
-      tappedNiku = [];
-      nikuTable = [];
-      var nikuTypes = shuffledNumberArray();
-      for (y = 0; y < 6; y++) {
-        nikuTable[y] = [];
-        for (x = 0; x < 6; x++) {
-          nikuTable[y][x] = new Niku(x, y, nikuTypes[x + y * 6]);
-        }
-      }
+      // 肉を並べる
+      setNiku();
 
       // 注文を入れる
       nikuOrder = new NikuOrder();
