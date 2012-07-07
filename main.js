@@ -1,10 +1,10 @@
 enchant();
 
+// ひとつの肉の画像サイズ（縦横いっしょ）
 var IMAGE_SIZE = 32;
 var NIKU_NAMES = [ "Junkei", "Shirot", "Negima", "Tan", "Kyuuri", "Wakadori" ];
 
 var Niku = enchant.Class.create(enchant.Sprite, {
-  // ひとつの肉の画像サイズ（縦横いっしょ）
 
   initialize: function(x, y) {
     enchant.Sprite.call(this, IMAGE_SIZE, IMAGE_SIZE);
@@ -16,31 +16,38 @@ var Niku = enchant.Class.create(enchant.Sprite, {
     this.frame = this.type;
 
     this.addEventListener("touchend", function() {
-      var i;
-      tappedNiku[tappedNiku.length] = this;
+      var i, nikumatch = false;
 
-      // 前回と違う肉がタップされたらもとに戻す
-      if (tappedNiku.length >= 2 && tappedNiku[tappedNiku.length - 1].type !== tappedNiku[tappedNiku.length - 2].type) {
-        for (i = 0; i < tappedNiku.length; i++) {
-          tappedNiku[i].frame = tappedNiku[i].type;
-        }
-        tappedNiku = [];
+      tappedNiku[tappedNiku.length] = this;
+      // タップされたことが分かるような見た目にする
+      this.rotation = 90;
+      if (tappedNiku.length < 5) {
         return;
       }
 
-      // 同じ肉が5回連続でタップされたら消す
-      if (tappedNiku.length === 5) {
+      // 肉が5つ選択されたら……
+      for (i = 1; i < tappedNiku.length; i++) {
+        if (tappedNiku[0].type !== tappedNiku[i].type) {
+          nikumatch = true;
+          break;
+        }
+      }
+
+      if (nikumatch) {
+        // 失敗！
+        for (i = 0; i < tappedNiku.length; i++) {
+          tappedNiku[i].rotation = 0;
+        }
+      } else {
+        // 成功！
         for (i = 0; i < tappedNiku.length; i++) {
           tappedNiku[i].tl.fadeOut(10).and().rotateBy(360, 10).then(function() {
             game.rootScene.removeChild(tappedNiku[i]);
           });
         }
-        tappedNiku = [];
-        return;
       }
 
-      // とりあえず肉が消えたかのような画像にしておく
-      this.frame = 8;
+      tappedNiku = [];
     });
 
     game.rootScene.addChild(this);
@@ -64,9 +71,9 @@ window.onload = function() {
       }
 
       // 注文が入る
-      nikuOrder = Math.floor(Math.random() * 6);
       var label = new Label();
-      label.text = NIKU_NAMES[nikuOrder];
+      label.nikuOrder = Math.floor(Math.random() * 6);
+      label.text = NIKU_NAMES[label.nikuOrder];
       game.rootScene.addChild(label);
     }
     game.start();
