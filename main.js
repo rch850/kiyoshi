@@ -9,6 +9,19 @@ var ORDER_TIMER = 30 * 10;
 // フォント
 var DEFAULT_FONT = "20pt Serif";
 
+function fadeOutAllNiku(callback) {
+  var x, y;
+  for (y = 0; y < 6; y++) {
+    for (x = 0; x < 6; x++) {
+      if (x !== 0 || y !== 0) {
+        nikuTable[y][x].tl.fadeOut(10);
+      } else {
+        nikuTable[y][x].tl.fadeOut(10).then(callback);
+      }
+    }
+  }
+}
+
 var Niku = enchant.Class.create(enchant.Sprite, {
 
   initialize: function(x, y, type) {
@@ -50,20 +63,23 @@ var Niku = enchant.Class.create(enchant.Sprite, {
       if (nikumatch) {
         // 成功！
         for (i = 0; i < tappedNiku.length; i++) {
-          if (i === 0) {
+          if (i !== 0) {
+            tappedNiku[i].tl.fadeOut(10).and().rotateBy(360, 10);
+          } else {
             tappedNiku[i].tl.fadeOut(10).and().rotateBy(360, 10).then(function() {
-              for (j = 0; j < 6 * 6; j++) {
-                game.rootScene.removeChild(nikuTable[Math.floor(j / 6)][Math.floor(j % 6)]);
-              }
+              fadeOutAllNiku(function() {
+                var x, y;
+                for (y = 0; y < 6; y++) {
+                  for (x = 0; x < 6; x++) {
+                    game.rootScene.removeChild(nikuTable[y][x]);
+                  }
+                }
+              });
               setTimeout(function() {
                 setNiku();
                 tappedNiku = [];
                 nikuOrder.newOrder();
               }, 500);
-            });
-          } else {
-            tappedNiku[i].tl.fadeOut(10).and().rotateBy(360, 10).then(function() {
-              game.rootScene.removeChild(tappedNiku[i]);
             });
           }
         }
@@ -75,12 +91,19 @@ var Niku = enchant.Class.create(enchant.Sprite, {
             score += Math.floor(nikuOrder.timelimit / 3 / 5 * 10);
           }
         }
-        for (j = 0; j < 6 * 6; j++) {
-          game.rootScene.removeChild(nikuTable[Math.floor(j / 6)][Math.floor(j % 6)]);
-        }
-        setNiku();
-        tappedNiku = [];
-        nikuOrder.newOrder();
+        fadeOutAllNiku(function() {
+          var x, y;
+          for (y = 0; y < 6; y++) {
+            for (x = 0; x < 6; x++) {
+              game.rootScene.removeChild(nikuTable[y][x]);
+            }
+          }
+          setTimeout(function() {
+            setNiku();
+            tappedNiku = [];
+            nikuOrder.newOrder();
+          }, 500);
+        });
       }
     });
 
