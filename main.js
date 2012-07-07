@@ -1,6 +1,7 @@
 enchant();
 
 var IMAGE_SIZE = 32;
+var NIKU_NAMES = [ "Junkei", "Shirot", "Negima", "Tan", "Kyuuri", "Wakadori" ];
 
 var Niku = enchant.Class.create(enchant.Sprite, {
   // ひとつの肉の画像サイズ（縦横いっしょ）
@@ -9,7 +10,7 @@ var Niku = enchant.Class.create(enchant.Sprite, {
     enchant.Sprite.call(this, IMAGE_SIZE, IMAGE_SIZE);
     this.image = game.assets["niku.png"];
     this.x = 16 + x * 48;
-    this.y = 16 + y * 48;
+    this.y = 56 + y * 48;
     this.scaleX = this.scaleY = 48 / IMAGE_SIZE;
     this.type = Math.floor(Math.random() * 6);
     this.frame = this.type;
@@ -47,19 +48,26 @@ var Niku = enchant.Class.create(enchant.Sprite, {
 });
 
 window.onload = function() {
-    game = new Game(320, 320);
+    game = new Game(320, 400);
     game.preload("niku.png");
     game.onload = function() {
       var x, y;
+
+      // 肉を並べる
       tappedNiku = [];
       nikuTable = [];
-
       for (y = 0; y < 6; y++) {
         nikuTable[y] = [];
         for (x = 0; x < 6; x++) {
           nikuTable[y][x] = new Niku(x, y);
         }
       }
+
+      // 注文が入る
+      nikuOrder = Math.floor(Math.random() * 6);
+      var label = new Label();
+      label.text = NIKU_NAMES[nikuOrder];
+      game.rootScene.addChild(label);
     }
     game.start();
 }
