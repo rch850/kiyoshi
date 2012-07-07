@@ -111,20 +111,27 @@ var Niku = enchant.Class.create(enchant.Sprite, {
   }
 });
 
-var NikuOrder = Class.create(Label, {
+var NikuOrder = Class.create(Sprite, {
   initialize: function() {
-    Label.call(this, "Hey, Kiyoshi!!");
-    this.font = DEFAULT_FONT;
-    this.color = "#FF0";
+    Sprite.call(this, 100, 32);
+    this.image = game.assets["menu.png"];
+    this.y = 4;
     this.newOrder();
     this.addEventListener("enterframe", function() {
-      this.text = NIKU_NAMES[this.type] + "  " + (this.timelimit / 3 * 10).toFixed(0);
+      this.frame = this.type;
       this.timelimit--;
+      this.timelimitLabel.text = Math.floor(nikuOrder.timelimit / 3 * 10);
       if (this.timelimit < 0) {
         game.end("おそいわ！");
       }
     });
+
+    this.timelimitLabel = new Label("");
+    this.timelimitLabel.font = DEFAULT_FONT;
+    this.timelimitLabel.color = "#FF0";
+    this.timelimitLabel.x = 110;
     game.rootScene.addChild(this);
+    game.rootScene.addChild(this.timelimitLabel);
   },
 
   newOrder: function() {
@@ -168,7 +175,7 @@ function setNiku() {
 window.onload = function() {
     game = new Game(320, 356);
     game.rootScene.backgroundColor = "#200";
-    game.preload("niku.png");
+    game.preload("niku.png", "menu.png");
     game.onload = function() {
       score = 0;
 
