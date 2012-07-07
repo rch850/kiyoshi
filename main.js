@@ -1,11 +1,15 @@
 enchant();
 
 var Niku = enchant.Class.create(enchant.Sprite, {
+  // ひとつの肉の画像サイズ（縦横いっしょ）
+  IMAGE_SIZE = 32;
+
   initialize: function(x, y) {
-    enchant.Sprite.call(this, 32, 32);
+    enchant.Sprite.call(this, IMAGE_SIZE, IMAGE_SIZE);
     this.image = game.assets["niku.png"];
-    this.x = x * 32;
-    this.y = y * 32;
+    this.x = 16 + x * 48;
+    this.y = 16 + y * 48;
+    this.scaleX = this.scaleY = 48 / IMAGE_SIZE;
     this.type = Math.floor(Math.random() * 6);
     this.frame = this.type;
 
